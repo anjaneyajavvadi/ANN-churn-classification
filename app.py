@@ -5,7 +5,14 @@ from sklearn.preprocessing import LabelEncoder,OneHotEncoder,StandardScaler
 import tensorflow as tf
 import pickle
 
-model = tf.keras.models.load_model('model.h5', custom_objects={'BinaryCrossentropy': tf.keras.losses.BinaryCrossentropy})
+class BinaryCrossentropy(tf.keras.losses.BinaryCrossentropy):
+    def __init__(self, **kwargs):
+        if 'fn' in kwargs:
+            del kwargs['fn']
+        super().__init__(**kwargs)
+
+model = tf.keras.models.load_model('model.h5', custom_objects={'BinaryCrossentropy': BinaryCrossentropy})
+
 
 with open('LabelEncoder.pkl','rb') as file:
     le=pickle.load(file)
